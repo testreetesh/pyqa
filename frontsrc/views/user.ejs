@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Center</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+        .navbar { background: #2c3e50; }
+        .timer-box { position: sticky; top: 10px; z-index: 100; background: #e74c3c; color: white; border-radius: 50px; padding: 10px 20px; font-weight: bold; width: fit-content; margin: 0 auto; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .option-btn { display: block; width: 100%; text-align: left; padding: 12px; margin-bottom: 8px; border: 1px solid #ddd; border-radius: 8px; background: white; transition: 0.2s; }
+        .option-btn:hover { background: #f0f7ff; border-color: #3498db; }
+        .selected { background: #d1e7ff !important; border-color: #3498db !important; }
+        .section-title { font-size: 1.1rem; font-weight: bold; color: #2c3e50; margin-bottom: 15px; display: block; }
+    </style>
+</head>
+<body>
+    
+<nav class="navbar navbar-dark mb-4">
+    <div class="container text-center">
+        <a class="navbar-brand mx-auto" href="#">DAILY STUDY HUB</a>
+    </div>
+</nav>
+    
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card p-4 mb-4">
+                <span class="section-title">📚 Previous Year Papers</span>
+                <table class="table table-sm" id="teacherTable">
+                    <tbody id="exam-table-body">
+                        </tbody>
+                </table>
+            </div>
+
+            <div class="card p-4 mb-4">
+                <span class="section-title">📝 Daily Mock Tests</span>
+                <p class="text-muted small">Note: Solutions available 24 hours after test release.</p>
+                <table class="table table-sm">
+                    <thead>
+                        <tr class="small text-muted">
+                            <th>Date</th>
+                            <th>Paper</th>
+                            <th>Solution</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mock-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div id="quiz-header" class="d-flex justify-content-between align-items-center mb-3">
+                <h4>Practice Quiz</h4>
+                <div id="timer" class="timer-box">Time Left: 05:00</div>
+            </div>
+            
+            <div id="quiz-area">
+                <% data.questions.forEach((q, idx) => { %>
+                    <div class="card p-4 mb-3 mcq-block" data-correct="<%= q.correct %>">
+                        <h6 class="mb-3">Q<%= idx+1 %>. <%= q.q %></h6>
+                        <% q.options.forEach((opt, i) => { %>
+                            <button class="option-btn" onclick="select(this, <%= i %>)"><%= opt %></button>
+                        <% }) %>
+                        <input type="hidden" class="answer-val">
+                    </div>
+                <% }) %>
+                <button class="btn btn-dark btn-lg w-100 mb-5" onclick="finish()">Submit My Answers</button>
+            </div>
+            
+            <div id="result-area" class="card p-5 text-center d-none">
+                <h1 class="display-4" id="score-display">0/0</h1>
+                <p id="grade-msg"></p>
+                <button class="btn btn-primary" onclick="location.reload()">Restart Quiz</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <ul class="nav nav-pills mb-4 justify-content-center" id="pills-tab" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" id="concept-tab" data-bs-toggle="pill" data-bs-target="#concept-view">📖 Learn Concept</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" id="quiz-tab" data-bs-toggle="pill" data-bs-target="#quiz-view">✍️ Practice Quiz</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="concept-view">
+            <div class="card p-5">
+                <h2 class="text-primary"><%= content.concept.title %></h2>
+                <hr>
+                <div class="concept-body">
+                    <p class="lead"><%= content.concept.description %></p>
+                </div>
+                <% if(content.concept.videoUrl) { %>
+                    <div class="ratio ratio-16x9 mt-4">
+                        <iframe src="<%= content.concept.videoUrl %>" allowfullscreen></iframe>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="quiz-view">
+            <div id="quiz-area">
+                <% content.questions.forEach((q, idx) => { %>
+                    <div class="card p-4 mb-3 mcq-block" data-correct="<%= q.correct %>">
+                        <h6>Q<%= idx+1 %>. <%= q.q %></h6>
+                        
+                        <button class="btn btn-sm btn-link p-0 text-decoration-none mb-2" 
+                                onclick="this.nextElementSibling.classList.toggle('d-none')">
+                            💡 Show Hint
+                        </button>
+                        <div class="alert alert-warning small d-none"><%= q.hint %></div>
+
+                        <% q.options.forEach((opt, i) => { %>
+                            <button class="option-btn" onclick="select(this, <%= i %>)"><%= opt %></button>
+                        <% }) %>
+                        
+                        <div class="sol-box d-none mt-2 text-success small fw-bold">
+                            ✅ Solution: <%= q.solution %>
+                        </div>
+                        <input type="hidden" class="answer-val">
+                    </div>
+                <% }) %>
+                <button class="btn btn-dark w-100" onclick="finish()">Submit Answers</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/script.js"></script>
+
+<script>
+    // TIMER LOGIC
+    let timeLeft = 300; 
+    const timerEl = document.getElementById('timer');
+    
+    const countdown = setInterval(() => {
+        let mins = Math.floor(timeLeft / 60);
+        let secs = timeLeft % 60;
+        timerEl.innerText = `Time Left: ${mins}:${secs < 10 ? '0'+secs : secs}`;
+        if(timeLeft <= 0) { 
+            clearInterval(countdown); 
+            finish(); 
+        }
+        timeLeft--;
+    }, 1000);
+
+    // SELECTION LOGIC
+    function select(btn, val) {
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        parent.querySelector('.answer-val').value = val;
+    }
+
+    // SUBMISSION LOGIC
+    function finish() {
+    clearInterval(countdown);
+    let score = 0;
+    const blocks = document.querySelectorAll('.mcq-block');
+    
+    blocks.forEach(b => {
+        const ans = b.querySelector('.answer-val').value;
+        const correct = b.dataset.correct;
+        
+        // Show the solution boxes
+        b.querySelector('.sol-box').classList.remove('d-none');
+        
+        if(ans == correct) {
+            b.style.borderLeft = "5px solid #2ecc71"; // Green for right
+            score++;
+        } else {
+            b.style.borderLeft = "5px solid #e74c3c"; // Red for wrong
+        }
+    });
+
+    // Show results
+    document.getElementById('score-display').innerText = `${score} / ${blocks.length}`;
+    document.getElementById('result-area').classList.remove('d-none');
+    // Scroll to top to see score
+    window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

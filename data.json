@@ -1,0 +1,26 @@
+{
+  "questions": [
+    {
+      "id": 1774774576079,
+      "q": "What is the capital France?",
+      "options": [
+        "Delhi",
+        "Washington",
+        "London",
+        "Paris"
+      ],
+      "correct": 3
+    },
+    {
+      "id": 1774776107181,
+      "q": "What is my name",
+      "options": [
+        "Alka",
+        "Falka",
+        "Salka",
+        "Dhalka"
+      ],
+      "correct": 0
+    }
+  ]
+}

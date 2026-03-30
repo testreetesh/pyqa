@@ -1,0 +1,22 @@
+{
+  "dailyContent": {
+    "2024-05-22": {
+      "concept": {
+        "subject": "Polity",
+        "title": "Fundamental Rights",
+        "description": "Fundamental Rights are the basic human rights guaranteed by the Constitution of India...",
+        "videoUrl": "https://www.youtube.com/embed/example"
+      },
+      "questions": [
+        {
+          "id": 1,
+          "q": "Which article is known as the Heart and Soul of the Constitution?",
+          "options": ["Art 14", "Art 19", "Art 21", "Art 32"],
+          "correct": 3,
+          "hint": "It relates to Constitutional Remedies.",
+          "solution": "Article 32 allows citizens to move the Supreme Court for enforcement of rights."
+        }
+      ]
+    }
+  }
+}
